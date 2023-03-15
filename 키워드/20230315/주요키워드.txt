@@ -1,0 +1,6 @@
+@RequestParam : 파라미터를 받음
+GetMapping?변수명=value
+
+화면 우선순위
+1. Controller 체크
+2. Staric 체크
