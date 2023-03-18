@@ -1,34 +1,28 @@
 package hello.hellospring.service;
 
 import hello.hellospring.domain.Member;
+import hello.hellospring.repository.MemberRepository;
 import hello.hellospring.repository.MemoryMemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class MemberServiceTest {
+@SpringBootTest // Spring 컨테이너를 띄우고 테스트 진행 (통합테스트)
+@Transactional // Commit 처리를 안함 (테스트하고 롤백하니까 사후처리 할 필요가 없음)
+class MemberServiceIntegrationTest {
 
-    MemberService memberService;
-    MemoryMemberRepository memberRepository;
-
-    @BeforeEach
-    // 전 실행
-    public void beforeEach() {
-        memberRepository = new MemoryMemberRepository(); // 인터페이스 구현
-        memberService = new MemberService(memberRepository);
-        /* Dependency Injection */
-    }
-
-    @AfterEach
-    // 후 실행
-    public void afterEach() {
-        memberRepository.clearStore();
-    }
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
 
     @Test
+    //@Commit
     void 회원가입() {
         // given
         Member member = new Member();
