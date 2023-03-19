@@ -6,13 +6,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 public class JdbcMemberRepository implements MemberRepository {
+
     private final DataSource dataSource;
+
     public JdbcMemberRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+
     @Override
     public Member save(Member member) {
+
         String sql = "insert into member(name) values(?)";
 
         Connection conn = null;
@@ -43,6 +48,7 @@ public class JdbcMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findById(Long id) {
+
         String sql = "select * from member where id = ?";
 
         Connection conn = null;
@@ -57,6 +63,7 @@ public class JdbcMemberRepository implements MemberRepository {
             rs = pstmt.executeQuery();
 
             if(rs.next()) {
+
                 Member member = new Member();
                 member.setId(rs.getLong("id"));
                 member.setName(rs.getString("name"));
@@ -73,6 +80,7 @@ public class JdbcMemberRepository implements MemberRepository {
 
     @Override
     public List<Member> findAll() {
+
         String sql = "select * from member";
 
         Connection conn = null;
@@ -101,6 +109,7 @@ public class JdbcMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByName(String name) {
+
         String sql = "select * from member where name = ?";
 
         Connection conn = null;
@@ -119,7 +128,6 @@ public class JdbcMemberRepository implements MemberRepository {
                 member.setName(rs.getString("name"));
                 return Optional.of(member);
             }
-
             return Optional.empty();
         } catch (Exception e) {
             throw new IllegalStateException(e);
