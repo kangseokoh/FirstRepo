@@ -1,8 +1,16 @@
 package hello.core;
 
+import hello.core.discount.DiscountPolicy;
+import hello.core.member.MemberRepository;
+import hello.core.member.MemoryMemberRepository;
+import hello.core.order.orderService;
+import hello.core.order.orderServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.core.OrderComparator;
 
 @Configuration // @Compnent 어노테이션을 찾아서 해당 클래스를 모두 빈으로 등록해줌
 @ComponentScan (
@@ -19,5 +27,17 @@ import org.springframework.context.annotation.FilterType;
 
 public class AutoAppConfig {
 
+//    @Autowired MemberRepository memberRepository;
+//    @Autowired DiscountPolicy discountPolicy;
+//
+//    @Bean
+//    orderService orderService() {
+//        return new orderServiceImpl(memberRepository,discountPolicy);
+//    }
+
+    @Bean(name = "memoryMemberRepository")
+    MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
 
 }
