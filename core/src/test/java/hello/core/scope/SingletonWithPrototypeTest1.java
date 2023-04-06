@@ -2,11 +2,12 @@ package hello.core.scope;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import org.assertj.core.api.Assertions;
+import jakarta.inject.Provider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
+import static org.assertj.core.api.Assertions.*;
 
 public class SingletonWithPrototypeTest1 {
 
@@ -18,12 +19,12 @@ public class SingletonWithPrototypeTest1 {
 
         PrototypeBean prototypeBean1 = ac.getBean(PrototypeBean.class);
         prototypeBean1.addCount();
-        Assertions.assertThat(prototypeBean1.getCount()).isEqualTo(1);
+        assertThat(prototypeBean1.getCount()).isEqualTo(1);
 
 
         PrototypeBean prototypeBean2 = ac.getBean(PrototypeBean.class);
         prototypeBean2.addCount();
-        Assertions.assertThat(prototypeBean2.getCount()).isEqualTo(1);
+        assertThat(prototypeBean2.getCount()).isEqualTo(1);
     }
 
     @Test
@@ -33,19 +34,26 @@ public class SingletonWithPrototypeTest1 {
         ClientBean clientBean1 = ac.getBean(ClientBean.class);
         ClientBean clientBean2 = ac.getBean(ClientBean.class);
 
-        Assertions.assertThat(clientBean1.logic()).isNotEqualTo(clientBean2.logic());
+        //assertThat(clientBean1.logic()).isNotEqualTo(clientBean2.logic());
+        assertThat(clientBean1.logic()).isEqualTo(clientBean2.logic());
     }
 
     @Scope("singleton")
     static class ClientBean {
-        private final PrototypeBean prototypeBean; // 생성시점에 주입
 
-        @Autowired
-        public ClientBean(PrototypeBean prototypeBean) {
-            this.prototypeBean = prototypeBean;
-        }
+        @Autowired private Provider<PrototypeBean> prototypeBeanProvider;
+        //private final PrototypeBean prototypeBean; // 생성시점에 주입
+        //private ObjectProvider<PrototypeBean> prototypeBeanProvider;
+        //private ObjectFactory<PrototypeBean> prototypeBeanProvider;
+
+//        @Autowired
+//        public ClientBean(PrototypeBean prototypeBean) {
+//            this.prototypeBean = prototypeBean;
+//        }
 
         public int logic() {
+            PrototypeBean prototypeBean = prototypeBeanProvider.get(); // DL (Dependency Look-Up) : 컨테이너에서 찾아서 반환해줌
+            //PrototypeBean prototypeBean = prototypeBeanProvider.getObject(); // DL (Dependency Look-Up) : 컨테이너에서 찾아서 반환해줌
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;
